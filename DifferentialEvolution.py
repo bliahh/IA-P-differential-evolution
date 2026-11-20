@@ -28,11 +28,37 @@ class DifferentialEvolution:
         return self.lower_genes_limit + self.random_seed.rand(self.population_size,self.no_genes)* (self.upper_genes_limit - self.lower_genes_limit)
 
 
-    def selection(self):
-        pass
+    #curs 5 slide 14 (?)
+    def selection(self,minimize = True):
 
-    def crossover(self):
-        pass
+        for i in range(self.population_size):
+            mutant = self.mutate(i)
+            trial = self.crossover(self.population[i], mutant)
+
+            f_trial = self.compute_fitness(trial)
+            f_current = self.compute_fitness(self.population[i])
+
+            if minimize:
+                if f_trial <= f_current:
+                    self.population[i] = trial
+            else:
+                if f_trial >= f_current:
+                    self.population[i] = trial
+
+
+
+
+
+    #asta e incrucisarea binomiala din cursu 5 slide 10
+    def crossover(self,individ,mutant):
+        trial_vector = individ.copy()
+        k = self.random_seed.integers(0,self.no_genes)
+        for j in range(self.no_genes) :
+            if np.random.rand() < self.CR or j == k :
+                trial_vector[j] = mutant[j]
+        return trial_vector
+
+
 
     def mutate(self,individ):
 
@@ -48,8 +74,8 @@ class DifferentialEvolution:
 
 
 
-    def compute_fitness(self):
-        pass
+    def compute_fitness(self,chromosome):
+        return self.compute_fitness(chromosome)
 
     def evolve(self):
         pass

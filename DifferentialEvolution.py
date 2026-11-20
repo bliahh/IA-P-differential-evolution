@@ -25,8 +25,7 @@ class DifferentialEvolution:
 
 
     def initialize_population(self):
-        return self.lower_genes_limit + self.random_seed.rand(self.population_size,self.no_genes)* (self.upper_genes_limit - self.lower_genes_limit)
-
+        return self.lower_genes_limit + self.random_seed.random((self.population_size, self.no_genes)) *(self.upper_genes_limit - self.lower_genes_limit)
 
     #curs 5 slide 14 (?)
     def selection(self,minimize = True):
@@ -54,7 +53,7 @@ class DifferentialEvolution:
         trial_vector = individ.copy()
         k = self.random_seed.integers(0,self.no_genes)
         for j in range(self.no_genes) :
-            if np.random.rand() < self.CR or j == k :
+            if np.random.random() < self.CR or j == k :
                 trial_vector[j] = mutant[j]
         return trial_vector
 
@@ -75,8 +74,19 @@ class DifferentialEvolution:
 
 
     def compute_fitness(self,chromosome):
-        return self.compute_fitness(chromosome)
+        return self.fitness_function(chromosome)
 
-    def evolve(self):
-        pass
+
+    def evolve(self,minimize = True):
+        history = []
+        for generation in range(self.max_generations):
+            self.selection(minimize)
+
+            fitness_vals = [self.compute_fitness(x) for x in self.population]
+
+            best_idx = np.argmin(fitness_vals) if minimize else np.argmax(fitness_vals)
+
+            history.append(fitness_vals[best_idx])
+
+        return self.population[best_idx], fitness_vals[best_idx], history
 
